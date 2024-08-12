@@ -3,16 +3,6 @@
   "editor.formatOnSave": true,
   // Set Prettier as the default formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  // Configure Prettier
-  "prettier.printWidth": 80,
-  "prettier.tabWidth": 2,
-  "prettier.useTabs": false,
-  "prettier.semi": true,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "all",
-  "prettier.bracketSpacing": true,
-  "prettier.arrowParens": "always",
-  "prettier.endOfLine": "lf",
   // TypeScript Specific Settings
   "typescript.format.enable": true,
   "typescript.format.insertSpaceAfterCommaDelimiter": true,

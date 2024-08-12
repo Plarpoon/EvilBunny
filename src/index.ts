@@ -19,7 +19,7 @@ client.once('ready', async () => {
 
   // Scan for all guild IDs and store them in the client container
   const guildIds = await getAllGuildIds(client);
-  container.guildIds = guildIds; // Corrected assignment
+  container.guildIds = guildIds;
   client.logger.info(`Found and registered ${guildIds.length} guilds.`);
 });
 
