@@ -1,6 +1,7 @@
-import { Command, Listener } from '@sapphire/framework';
+import { Command } from '@sapphire/framework'; // Removed Listener import
 import { Message } from 'discord.js';
 import { CommandListener } from '../../src/listeners/commandListener';
+import { customContainer } from '../../src/CustomContainer';
 
 describe('Command Listener', () => {
   let listener: CommandListener;
@@ -8,11 +9,7 @@ describe('Command Listener', () => {
   beforeAll(() => {
     listener = new CommandListener(
       {
-        container: {
-          logger: {
-            info: jest.fn(),
-          },
-        },
+        container: customContainer,
       } as any,
       {},
     );
@@ -24,7 +21,7 @@ describe('Command Listener', () => {
 
     listener.run(message, command);
 
-    expect(listener.container.logger.info).toHaveBeenCalledWith(
+    expect(customContainer.logger.info).toHaveBeenCalledWith(
       'Command testCommand executed by TestUser',
     );
   });

@@ -1,39 +1,31 @@
-import { PlayCommand } from '../src/commands/play';
+import { PlayCommand } from '../../../src/commands/Music/play';
 import {
   ChatInputCommandInteraction,
   GuildMember,
   VoiceChannel,
 } from 'discord.js';
+import { customContainer } from '../../../src/CustomContainer';
+import ytdl from 'ytdl-core';
 
-jest.mock('@discordjs/voice', () => ({
-  joinVoiceChannel: jest.fn(),
-  createAudioPlayer: jest.fn().mockReturnValue({
-    play: jest.fn(),
-    on: jest.fn(),
-  }),
-  createAudioResource: jest.fn(),
-  AudioPlayerStatus: {
-    Playing: 'playing',
-    Idle: 'idle',
-  },
-}));
+jest.mock('ytdl-core');
+const mockedYtdl = ytdl as jest.MockedFunction<typeof ytdl>;
 
 describe('Play Command', () => {
-  let playCommand: PlayCommand;
+  let command: PlayCommand;
   let interaction: ChatInputCommandInteraction;
 
-  beforeEach(() => {
-    playCommand = new PlayCommand(
+  beforeAll(() => {
+    command = new PlayCommand(
       {
-        container: {
-          logger: { info: jest.fn() },
-          guildIds: ['123'],
-        },
+        container: customContainer,
       } as any,
       {},
     );
+  });
 
+  beforeEach(() => {
     interaction = {
+      reply: jest.fn(),
       options: {
         getString: jest
           .fn()
@@ -42,24 +34,34 @@ describe('Play Command', () => {
       member: {
         voice: {
           channel: {
-            id: 'voiceChannelId',
-            guild: { id: 'guildId', voiceAdapterCreator: {} },
-          },
+            id: 'voice-channel-id',
+            guild: {
+              id: 'guild-id',
+              voiceAdapterCreator: {},
+            },
+          } as VoiceChannel,
         },
-      },
-      reply: jest.fn(),
-    } as any;
+      } as GuildMember,
+    } as unknown as ChatInputCommandInteraction;
   });
 
-  test('should join voice channel and play audio', async () => {
-    await playCommand.chatInputRun(interaction);
+  test('should play a YouTube video in a voice channel', async () => {
+    mockedYtdl.mockReturnValue('mocked-stream' as any);
+
+    await command.chatInputRun(interaction);
 
     expect(interaction.reply).toHaveBeenCalledWith('Now playing!');
   });
 
-  test('should reject if user is not in a voice channel', async () => {
-    interaction.member.voice.channel = null;
-    await playCommand.chatInputRun(interaction);
+  test('should return an error if the user is not in a voice channel', async () => {
+    if (interaction.member && interaction.member instanceof GuildMember) {
+      // Override the read-only channel property for testing purposes
+      Object.defineProperty(interaction.member.voice, 'channel', {
+        value: null,
+      });
+    }
+
+    await command.chatInputRun(interaction);
 
     expect(interaction.reply).toHaveBeenCalledWith(
       'You need to be in a voice channel to use this command.',

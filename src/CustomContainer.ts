@@ -3,6 +3,7 @@ import { container } from '@sapphire/framework';
 
 export class CustomContainer {
   guildIds: string[] = [];
+  logger: any;
 
   constructor() {
     // Copy over existing properties from the original container
