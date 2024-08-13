@@ -16,6 +16,7 @@ import {
   VoiceChannel,
 } from 'discord.js';
 import ytdl from 'ytdl-core';
+import { customContainer } from '../../CustomContainer';
 
 export class PlayCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -29,7 +30,7 @@ export class PlayCommand extends Command {
   public override registerApplicationCommands(
     registry: ApplicationCommandRegistry,
   ) {
-    const guildIds = this.container.guildIds;
+    const guildIds = customContainer.guildIds;
 
     registry.registerChatInputCommand(
       {

@@ -1,7 +1,8 @@
-import { LogLevel, SapphireClient, container } from '@sapphire/framework';
+import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
 import { getAllGuildIds } from './utils/guildUtils';
+import { customContainer } from './CustomContainer';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -19,7 +20,9 @@ client.once('ready', async () => {
 
   // Scan for all guild IDs and store them in the client container
   const guildIds = await getAllGuildIds(client);
-  container.guildIds = guildIds;
+
+  customContainer.guildIds = guildIds;
+
   client.logger.info(`Found and registered ${guildIds.length} guilds.`);
 });
 
